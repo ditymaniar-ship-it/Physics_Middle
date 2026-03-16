@@ -2,278 +2,225 @@
 <html>
 <head>
 <title>Forest Treasure Hunt – Force & Pressure</title>
+
 <style>
 
 body{
-margin:0;
-background:#0b3d0b;
 font-family:Arial;
-color:white;
+background-image:url("https://images.unsplash.com/photo-1501785888041-af3ef285b470");
+background-size:cover;
 text-align:center;
+color:white;
 }
 
-#info{
-padding:40px;
-}
-
-#gameContainer{
-display:none;
-position:relative;
-width:900px;
+#game{
+background:rgba(0,0,0,0.75);
+width:70%;
 margin:auto;
+margin-top:40px;
+padding:30px;
+border-radius:12px;
 }
 
-canvas{
-background:#2e8b57;
-border:4px solid white;
-}
-
-#ui{
-margin-top:10px;
-}
-
-#questionBox{
-position:absolute;
-top:120px;
-left:50%;
-transform:translateX(-50%);
-background:rgba(0,0,0,0.9);
-padding:20px;
-border-radius:10px;
-width:400px;
-display:none;
-}
-
-.option{
-display:block;
-margin:8px;
-padding:10px;
-background:#444;
-cursor:pointer;
+button{
+padding:12px 20px;
+font-size:16px;
+border:none;
 border-radius:6px;
+cursor:pointer;
+margin:10px;
 }
 
-.option:hover{
-background:#666;
+.map{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:15px;
+margin-top:20px;
 }
+
+.place{
+background:#2c3e50;
+padding:25px;
+border-radius:10px;
+cursor:pointer;
+font-size:18px;
+}
+
+.correct{background:#2ecc71;}
+.wrong{background:#e74c3c;}
 
 </style>
+
 </head>
 
 <body>
 
-<div id="info">
+<div id="game">
 
 <h1>🌲 Forest Treasure Hunt</h1>
 
-<p>
-Move your explorer through the forest paths.<br>
-Animals will appear and ask questions about <b>Force and Pressure</b>.
-</p>
+<h2>Welcome Explorer!</h2>
 
 <p>
-🎮 Move: Arrow Keys / WASD<br>
-🗝 Collect 4 keys to open the treasure chest.
+You have entered a mysterious forest where animals guard
+a hidden science treasure.
+</p>
+
+<h3>Your Mission</h3>
+
+<p>
+• Explore forest locations<br>
+• Answer science questions about Force & Pressure<br>
+• Collect treasure keys<br>
+• Unlock the hidden treasure chest
+</p>
+
+<h3>Rules</h3>
+
+<p>
+✔ Each correct answer gives you a key<br>
+✔ You need <b>4 keys</b> to open the treasure<br>
+✔ Choose different forest locations to find clues
 </p>
 
 <button onclick="startGame()">▶ Start Adventure</button>
 
 </div>
 
-<div id="gameContainer">
-
-<canvas id="gameCanvas" width="900" height="500"></canvas>
-
-<div id="ui">
-Keys Collected: <span id="keys">0</span>/4
-</div>
-
-<div id="questionBox">
-<h3 id="questionText"></h3>
-<div id="options"></div>
-</div>
-
-</div>
-
 <script>
 
-let canvas=document.getElementById("gameCanvas")
-let ctx=canvas.getContext("2d")
-
-let player={x:100,y:250,size:20}
 let keys=0
-
-let animals=[]
-let paths=[
-{x:0,y:220,w:900,h:60},
-{x:400,y:0,w:60,h:500}
-]
 
 let questions=[
 
-{q:"A push or pull on an object is called:",o:["Force","Energy","Speed","Mass"],a:0},
-{q:"Force per unit area is:",o:["Speed","Pressure","Energy","Momentum"],a:1},
-{q:"Which force pulls objects to Earth?",o:["Magnetic","Friction","Gravity","Tension"],a:2},
-{q:"Why do camels have broad feet?",o:["Increase pressure","Reduce pressure","Increase mass","Reduce gravity"],a:1},
-{q:"Sharp knives cut better because:",o:["More pressure","Less force","Less mass","More speed"],a:0},
-{q:"Which is a contact force?",o:["Gravity","Friction","Magnetism","Electrostatic"],a:1},
-{q:"Tractors have wide tyres to:",o:["Increase pressure","Reduce pressure","Increase force","Reduce speed"],a:1},
-{q:"Pressure increases when:",o:["Area increases","Area decreases","Force decreases","Mass decreases"],a:1}
+{
+q:"A woodcutter pushes a heavy log. What is the push or pull called?",
+o:["Force","Energy","Heat","Light"],
+a:0
+},
+
+{
+q:"Force acting on unit area is called:",
+o:["Energy","Pressure","Speed","Momentum"],
+a:1
+},
+
+{
+q:"Why do camel feet not sink in desert sand?",
+o:["Large area reduces pressure","More weight","More speed","Less gravity"],
+a:0
+},
+
+{
+q:"Which formula represents pressure?",
+o:["Force × Area","Force / Area","Area / Force","Mass × Velocity"],
+a:1
+},
+
+{
+q:"Why do sharp knives cut better?",
+o:["Less pressure","More pressure","More energy","Less force"],
+a:1
+},
+
+{
+q:"A porter carrying luggage uses a wide strap to:",
+o:["Increase pressure","Reduce pressure","Increase force","Increase speed"],
+a:1
+},
+
+{
+q:"If the same force acts on smaller area, pressure:",
+o:["Decreases","Increases","Remains same","Disappears"],
+a:1
+}
 
 ]
 
 function startGame(){
 
-document.getElementById("info").style.display="none"
-document.getElementById("gameContainer").style.display="block"
-
-spawnAnimals()
-
-gameLoop()
+showMap()
 
 }
 
-function spawnAnimals(){
+function showMap(){
 
-setInterval(()=>{
+document.getElementById("game").innerHTML=
 
-animals.push({
-x:Math.random()*850,
-y:Math.random()*450,
-size:20
-})
+`<h1>🌲 Forest Treasure Hunt</h1>
 
-},4000)
+<div>Keys Collected: ${keys} / 4</div>
 
-}
+<h2>🗺 Choose a Forest Location</h2>
 
-function drawPaths(){
+<div class="map">
 
-ctx.fillStyle="#a0522d"
+<div class="place" onclick="challenge()">🦊 Fox Den</div>
+<div class="place" onclick="challenge()">🦌 River Bank</div>
+<div class="place" onclick="challenge()">🐻 Bear Cave</div>
+<div class="place" onclick="challenge()">🦉 Tall Tree</div>
+<div class="place" onclick="challenge()">🌳 Deep Forest</div>
+<div class="place" onclick="treasure()">🏆 Treasure Chest</div>
 
-paths.forEach(p=>{
-ctx.fillRect(p.x,p.y,p.w,p.h)
-})
-
-}
-
-function drawPlayer(){
-
-ctx.fillStyle="yellow"
-ctx.beginPath()
-ctx.arc(player.x,player.y,player.size,0,Math.PI*2)
-ctx.fill()
+</div>`
 
 }
 
-function drawAnimals(){
-
-ctx.fillStyle="orange"
-
-animals.forEach(a=>{
-ctx.beginPath()
-ctx.arc(a.x,a.y,a.size,0,Math.PI*2)
-ctx.fill()
-})
-
-}
-
-function gameLoop(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height)
-
-drawPaths()
-drawPlayer()
-drawAnimals()
-
-checkCollisions()
-
-requestAnimationFrame(gameLoop)
-
-}
-
-document.addEventListener("keydown",e=>{
-
-let speed=5
-
-if(e.key==="ArrowUp"||e.key==="w") player.y-=speed
-if(e.key==="ArrowDown"||e.key==="s") player.y+=speed
-if(e.key==="ArrowLeft"||e.key==="a") player.x-=speed
-if(e.key==="ArrowRight"||e.key==="d") player.x+=speed
-
-})
-
-function checkCollisions(){
-
-animals.forEach((a,i)=>{
-
-let dx=player.x-a.x
-let dy=player.y-a.y
-let dist=Math.sqrt(dx*dx+dy*dy)
-
-if(dist<30){
-
-animals.splice(i,1)
-showQuestion()
-
-}
-
-})
-
-}
-
-function showQuestion(){
+function challenge(){
 
 let q=questions[Math.floor(Math.random()*questions.length)]
 
-let box=document.getElementById("questionBox")
-box.style.display="block"
+let html="<h2>🌲 Forest Challenge</h2>"
+html+="<p>"+q.q+"</p>"
 
-document.getElementById("questionText").innerText=q.q
+for(let i=0;i<q.o.length;i++){
 
-let optDiv=document.getElementById("options")
-optDiv.innerHTML=""
+html+=`<button onclick="check(${i},${q.a})">${q.o[i]}</button>`
 
-q.o.forEach((opt,i)=>{
+}
 
-let div=document.createElement("div")
-div.className="option"
-div.innerText=opt
+document.getElementById("game").innerHTML=html
 
-div.onclick=()=>{
+}
 
-playSound()
+function check(choice,answer){
 
-if(i==q.a){
+if(choice==answer){
 
 keys++
-document.getElementById("keys").innerText=keys
+alert("Correct! You found a treasure key!")
+
+}else{
+
+alert("Wrong! The animal hides the key.")
+
+}
+
+showMap()
+
+}
+
+function treasure(){
 
 if(keys>=4){
-alert("🏆 Treasure Unlocked! Pressure = Force / Area")
-}
+
+document.getElementById("game").innerHTML=
+
+`<h1>🏆 TREASURE FOUND!</h1>
+
+<h2>You collected enough keys!</h2>
+
+<p>The secret treasure knowledge:</p>
+
+<h2>Pressure = Force / Area</h2>
+
+<p>🌲 Congratulations Explorer!</p>`
+
+}else{
+
+alert("You need 4 keys to unlock the treasure!")
 
 }
-
-box.style.display="none"
-
-}
-
-optDiv.appendChild(div)
-
-})
-
-}
-
-function playSound(){
-
-let ctx=new AudioContext()
-let osc=ctx.createOscillator()
-osc.type="sine"
-osc.frequency.value=600
-osc.connect(ctx.destination)
-osc.start()
-osc.stop(ctx.currentTime+0.15)
 
 }
 
