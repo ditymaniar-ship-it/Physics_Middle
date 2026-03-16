@@ -1,15 +1,16 @@
+```html id="a2k1jd"
 <!DOCTYPE html>
 <html>
 <head>
-<title>Forest Map Physics Adventure</title>
+<title>Forest Treasure Hunt – Force & Pressure</title>
 
 <style>
 
 body{
 font-family:Arial;
-text-align:center;
-background-image:url("https://images.unsplash.com/photo-1441974231531-c6227db76b6e");
+background-image:url("https://images.unsplash.com/photo-1501785888041-af3ef285b470");
 background-size:cover;
+text-align:center;
 color:white;
 }
 
@@ -22,33 +23,31 @@ padding:30px;
 border-radius:12px;
 }
 
+button{
+padding:12px 20px;
+font-size:16px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+margin:10px;
+}
+
 .map{
 display:grid;
 grid-template-columns:repeat(3,1fr);
-gap:20px;
+gap:15px;
 margin-top:20px;
 }
 
-.location{
-padding:30px;
+.place{
 background:#2c3e50;
+padding:25px;
 border-radius:10px;
 cursor:pointer;
 font-size:18px;
 }
 
-button{
-display:block;
-margin:10px auto;
-padding:12px;
-font-size:16px;
-width:60%;
-border-radius:6px;
-border:none;
-cursor:pointer;
-}
-
-.correct{background:#27ae60;}
+.correct{background:#2ecc71;}
 .wrong{background:#e74c3c;}
 
 </style>
@@ -59,189 +58,168 @@ cursor:pointer;
 
 <div id="game">
 
-<h1>🌲 Forest Map Adventure</h1>
+<h1>🌲 Forest Treasure Hunt</h1>
+
+<h2>Welcome Explorer!</h2>
 
 <p>
-You are an explorer searching for hidden treasure.  
-Animals in different forest locations will test your physics knowledge!
+You have entered a mysterious forest where animals guard
+a hidden science treasure.
 </p>
 
-<h2>🗺 Choose a Forest Location</h2>
+<h3>Your Mission</h3>
 
-<div class="map">
+<p>
+• Explore forest locations<br>
+• Answer science questions about Force & Pressure<br>
+• Collect treasure keys<br>
+• Unlock the hidden treasure chest
+</p>
 
-<div class="location" onclick="fox()">🦊 Fox Den</div>
-<div class="location" onclick="deer()">🦌 River Bank</div>
-<div class="location" onclick="bear()">🐻 Cave</div>
-<div class="location" onclick="owl()">🦉 Tall Tree</div>
-<div class="location" onclick="treasure()">🏆 Treasure Chest</div>
+<h3>Rules</h3>
 
-</div>
+<p>
+✔ Each correct answer gives you a key<br>
+✔ You need <b>4 keys</b> to open the treasure<br>
+✔ Choose different forest locations to find clues
+</p>
 
-<p id="msg"></p>
+<button onclick="startGame()">▶ Start Adventure</button>
 
 </div>
 
 <script>
 
-let foxDone=false
-let deerDone=false
-let bearDone=false
-let owlDone=false
+let keys=0
 
-function fox(){
+let questions=[
 
-document.getElementById("game").innerHTML=`
+{
+q:"A woodcutter pushes a heavy log. What is the push or pull called?",
+o:["Force","Energy","Heat","Light"],
+a:0
+},
 
-<h2>🦊 Fox Question</h2>
+{
+q:"Force acting on unit area is called:",
+o:["Energy","Pressure","Speed","Momentum"],
+a:1
+},
 
-<p>
-A lumberjack pushes a heavy log in the forest.
+{
+q:"Why do camel feet not sink in desert sand?",
+o:["Large area reduces pressure","More weight","More speed","Less gravity"],
+a:0
+},
 
-What is the push or pull acting on the log called?
-</p>
+{
+q:"Which formula represents pressure?",
+o:["Force × Area","Force / Area","Area / Force","Mass × Velocity"],
+a:1
+},
 
-<button onclick="checkFox(false)">Energy</button>
-<button onclick="checkFox(true)">Force</button>
-<button onclick="checkFox(false)">Heat</button>
-<button onclick="checkFox(false)">Light</button>
+{
+q:"Why do sharp knives cut better?",
+o:["Less pressure","More pressure","More energy","Less force"],
+a:1
+},
 
-`
+{
+q:"A porter carrying luggage uses a wide strap to:",
+o:["Increase pressure","Reduce pressure","Increase force","Increase speed"],
+a:1
+},
+
+{
+q:"If the same force acts on smaller area, pressure:",
+o:["Decreases","Increases","Remains same","Disappears"],
+a:1
+}
+
+]
+
+function startGame(){
+
+showMap()
 
 }
 
-function checkFox(correct){
+function showMap(){
 
-if(correct){
-foxDone=true
-alert("Correct! You unlocked Fox Den clue.")
-location.reload()
+document.getElementById("game").innerHTML=
+
+`<h1>🌲 Forest Treasure Hunt</h1>
+
+<div>Keys Collected: ${keys} / 4</div>
+
+<h2>🗺 Choose a Forest Location</h2>
+
+<div class="map">
+
+<div class="place" onclick="challenge()">🦊 Fox Den</div>
+<div class="place" onclick="challenge()">🦌 River Bank</div>
+<div class="place" onclick="challenge()">🐻 Bear Cave</div>
+<div class="place" onclick="challenge()">🦉 Tall Tree</div>
+<div class="place" onclick="challenge()">🌳 Deep Forest</div>
+<div class="place" onclick="treasure()">🏆 Treasure Chest</div>
+
+</div>`
+
+}
+
+function challenge(){
+
+let q=questions[Math.floor(Math.random()*questions.length)]
+
+let html="<h2>🌲 Forest Challenge</h2>"
+html+="<p>"+q.q+"</p>"
+
+for(let i=0;i<q.o.length;i++){
+
+html+=`<button onclick="check(${i},${q.a})">${q.o[i]}</button>`
+
+}
+
+document.getElementById("game").innerHTML=html
+
+}
+
+function check(choice,answer){
+
+if(choice==answer){
+
+keys++
+alert("Correct! You found a treasure key!")
+
 }else{
-alert("Try again!")
-}
+
+alert("Wrong! The animal hides the key.")
 
 }
 
-function deer(){
-
-document.getElementById("game").innerHTML=`
-
-<h2>🦌 Deer Question</h2>
-
-<p>
-A deer walks on soft mud and its hooves leave deep marks.
-
-What concept explains this effect?
-</p>
-
-<button onclick="checkDeer(false)">Speed</button>
-<button onclick="checkDeer(true)">Pressure</button>
-<button onclick="checkDeer(false)">Momentum</button>
-<button onclick="checkDeer(false)">Temperature</button>
-
-`
-
-}
-
-function checkDeer(correct){
-
-if(correct){
-deerDone=true
-alert("Correct! River Bank clue unlocked.")
-location.reload()
-}else{
-alert("Try again!")
-}
-
-}
-
-function bear(){
-
-document.getElementById("game").innerHTML=`
-
-<h2>🐻 Bear Question</h2>
-
-<p>
-A heavy bear presses the ground with its weight.
-
-Which formula represents pressure?
-</p>
-
-<button onclick="checkBear(false)">Force × Area</button>
-<button onclick="checkBear(true)">Force / Area</button>
-<button onclick="checkBear(false)">Area / Force</button>
-<button onclick="checkBear(false)">Mass × Velocity</button>
-
-`
-
-}
-
-function checkBear(correct){
-
-if(correct){
-bearDone=true
-alert("Correct! Cave clue unlocked.")
-location.reload()
-}else{
-alert("Try again!")
-}
-
-}
-
-function owl(){
-
-document.getElementById("game").innerHTML=`
-
-<h2>🦉 Owl Question</h2>
-
-<p>
-Why do sharp knives cut better than blunt knives?
-</p>
-
-<button onclick="checkOwl(false)">They are heavier</button>
-<button onclick="checkOwl(true)">They produce more pressure</button>
-<button onclick="checkOwl(false)">They move faster</button>
-<button onclick="checkOwl(false)">They reduce force</button>
-
-`
-
-}
-
-function checkOwl(correct){
-
-if(correct){
-owlDone=true
-alert("Correct! Owl clue unlocked.")
-location.reload()
-}else{
-alert("Try again!")
-}
+showMap()
 
 }
 
 function treasure(){
 
-if(foxDone && deerDone && bearDone && owlDone){
+if(keys>=4){
 
-document.getElementById("game").innerHTML=`
+document.getElementById("game").innerHTML=
 
-<h1>🏆 TREASURE FOUND!</h1>
+`<h1>🏆 TREASURE FOUND!</h1>
 
-<h2>Secret Formula</h2>
+<h2>You collected enough keys!</h2>
+
+<p>The secret treasure knowledge:</p>
 
 <h2>Pressure = Force / Area</h2>
 
-<p>
-You solved all the forest physics mysteries!
-</p>
+<p>🌲 Congratulations Explorer!</p>`
 
-`
+}else{
 
-}
-
-else{
-
-alert("Solve all animal clues before opening the treasure!")
+alert("You need 4 keys to unlock the treasure!")
 
 }
 
@@ -251,3 +229,4 @@ alert("Solve all animal clues before opening the treasure!")
 
 </body>
 </html>
+```
