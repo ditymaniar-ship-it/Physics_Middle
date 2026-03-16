@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,6 +12,7 @@ background-image:url("https://images.unsplash.com/photo-1501785888041-af3ef285b4
 background-size:cover;
 text-align:center;
 color:white;
+margin:0;
 }
 
 #game{
@@ -46,11 +48,26 @@ cursor:pointer;
 font-size:18px;
 }
 
-.correct{background:#2ecc71;}
-.wrong{background:#e74c3c;}
+.option{
+display:block;
+margin:10px auto;
+width:60%;
+}
+
+#message{
+font-size:20px;
+margin-top:20px;
+}
+
+.correct{
+color:#2ecc71;
+}
+
+.wrong{
+color:#ff7675;
+}
 
 </style>
-
 </head>
 
 <body>
@@ -62,25 +79,15 @@ font-size:18px;
 <h2>Welcome Explorer!</h2>
 
 <p>
-You have entered a mysterious forest where animals guard
-a hidden science treasure.
+Deep inside this mysterious forest lies a hidden science treasure.
+Animals will test your knowledge of <b>Force and Pressure</b>.
 </p>
 
 <h3>Your Mission</h3>
 
 <p>
-• Explore forest locations<br>
-• Answer science questions about Force & Pressure<br>
-• Collect treasure keys<br>
-• Unlock the hidden treasure chest
-</p>
-
-<h3>Rules</h3>
-
-<p>
-✔ Each correct answer gives you a key<br>
-✔ You need <b>4 keys</b> to open the treasure<br>
-✔ Choose different forest locations to find clues
+Explore forest locations and solve science challenges to collect treasure keys.
+You need <b>4 keys</b> to unlock the treasure chest.
 </p>
 
 <button onclick="startGame()">▶ Start Adventure</button>
@@ -93,54 +100,34 @@ let keys=0
 
 let questions=[
 
-{
-q:"A woodcutter pushes a heavy log. What is the push or pull called?",
-o:["Force","Energy","Heat","Light"],
-a:0
-},
+{q:"A push or pull acting on an object is called:",o:["Energy","Force","Pressure","Speed"],a:1},
 
-{
-q:"Force acting on unit area is called:",
-o:["Energy","Pressure","Speed","Momentum"],
-a:1
-},
+{q:"Which of these is a contact force?",o:["Gravitational force","Magnetic force","Friction","Electrostatic force"],a:2},
 
-{
-q:"Why do camel feet not sink in desert sand?",
-o:["Large area reduces pressure","More weight","More speed","Less gravity"],
-a:0
-},
+{q:"Which force pulls objects towards the Earth?",o:["Magnetic force","Gravity","Friction","Muscular force"],a:1},
 
-{
-q:"Which formula represents pressure?",
-o:["Force × Area","Force / Area","Area / Force","Mass × Velocity"],
-a:1
-},
+{q:"Force acting per unit area is called:",o:["Momentum","Pressure","Energy","Speed"],a:1},
 
-{
-q:"Why do sharp knives cut better?",
-o:["Less pressure","More pressure","More energy","Less force"],
-a:1
-},
+{q:"Why do camels have broad feet?",o:["Increase pressure","Reduce pressure on sand","Increase speed","Reduce weight"],a:1},
 
-{
-q:"A porter carrying luggage uses a wide strap to:",
-o:["Increase pressure","Reduce pressure","Increase force","Increase speed"],
-a:1
-},
+{q:"Why do sharp knives cut better?",o:["They increase pressure","They reduce force","They increase mass","They increase speed"],a:0},
 
-{
-q:"If the same force acts on smaller area, pressure:",
-o:["Decreases","Increases","Remains same","Disappears"],
-a:1
-}
+{q:"A porter uses a wide strap to carry luggage to:",o:["Increase pressure","Reduce pressure","Increase force","Reduce gravity"],a:1},
+
+{q:"Which of these increases pressure?",o:["Increasing area","Decreasing force","Reducing area","Reducing mass"],a:2},
+
+{q:"If force increases and area remains same, pressure:",o:["Decreases","Increases","Remains same","Becomes zero"],a:1},
+
+{q:"A football stops when kicked due to:",o:["Friction","Gravity","Pressure","Magnetism"],a:0},
+
+{q:"Which of these is a non-contact force?",o:["Friction","Muscular force","Gravitational force","Tension"],a:2},
+
+{q:"Why do tractors have wide tyres?",o:["Increase pressure","Reduce pressure","Increase force","Reduce motion"],a:1}
 
 ]
 
 function startGame(){
-
 showMap()
-
 }
 
 function showMap(){
@@ -149,9 +136,9 @@ document.getElementById("game").innerHTML=
 
 `<h1>🌲 Forest Treasure Hunt</h1>
 
-<div>Keys Collected: ${keys} / 4</div>
+<h3>Keys Collected: ${keys} / 4</h3>
 
-<h2>🗺 Choose a Forest Location</h2>
+<h2>🗺 Explore the Forest</h2>
 
 <div class="map">
 
@@ -162,7 +149,9 @@ document.getElementById("game").innerHTML=
 <div class="place" onclick="challenge()">🌳 Deep Forest</div>
 <div class="place" onclick="treasure()">🏆 Treasure Chest</div>
 
-</div>`
+</div>
+
+<div id="message"></div>`
 
 }
 
@@ -175,9 +164,11 @@ html+="<p>"+q.q+"</p>"
 
 for(let i=0;i<q.o.length;i++){
 
-html+=`<button onclick="check(${i},${q.a})">${q.o[i]}</button>`
+html+=`<button class="option" onclick="check(${i},${q.a})">${q.o[i]}</button>`
 
 }
+
+html+=`<div id="message"></div>`
 
 document.getElementById("game").innerHTML=html
 
@@ -185,18 +176,21 @@ document.getElementById("game").innerHTML=html
 
 function check(choice,answer){
 
+let msg=document.getElementById("message")
+
 if(choice==answer){
 
 keys++
-alert("Correct! You found a treasure key!")
+
+msg.innerHTML=`<div class="correct">🗝 Great job explorer! You found a treasure key!</div>
+<button onclick="showMap()">Continue Exploring</button>`
 
 }else{
 
-alert("Wrong! The animal hides the key.")
+msg.innerHTML=`<div class="wrong">🐾 Oops! The forest animal hides the key. Try another location!</div>
+<button onclick="showMap()">Return to Forest Map</button>`
 
 }
-
-showMap()
 
 }
 
@@ -210,15 +204,17 @@ document.getElementById("game").innerHTML=
 
 <h2>You collected enough keys!</h2>
 
-<p>The secret treasure knowledge:</p>
+<p>The forest reveals the secret knowledge:</p>
 
 <h2>Pressure = Force / Area</h2>
 
-<p>🌲 Congratulations Explorer!</p>`
+<p>🌲 You are now the <b>Forest Physics Explorer!</b></p>`
 
 }else{
 
-alert("You need 4 keys to unlock the treasure!")
+document.getElementById("message").innerHTML=
+
+`🔒 The treasure chest is locked. You need at least 4 keys!`
 
 }
 
