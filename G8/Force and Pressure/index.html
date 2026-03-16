@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forest Physics Treasure Hunt</title>
+
+<style>
+
+body{
+font-family:Arial;
+text-align:center;
+background-image:url("https://images.unsplash.com/photo-1501785888041-af3ef285b470");
+background-size:cover;
+background-position:center;
+color:white;
+}
+
+.container{
+background:rgba(0,0,0,0.7);
+width:60%;
+margin:auto;
+margin-top:80px;
+padding:30px;
+border-radius:12px;
+}
+
+input{
+padding:10px;
+font-size:16px;
+}
+
+button{
+padding:10px 20px;
+font-size:16px;
+margin-top:10px;
+cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container" id="game">
+
+<h1>🌲 Forest Treasure Hunt</h1>
+
+<p>You are exploring a mysterious forest.  
+Solve science clues to reach the hidden treasure!</p>
+
+<h2>Clue 1</h2>
+
+<p>
+A lumberjack pushes a heavy log to move it across the forest floor.
+What is the push or pull applied on an object called?
+</p>
+
+<input id="ans1">
+<br>
+<button onclick="check1()">Submit</button>
+
+<p id="msg1"></p>
+
+</div>
+
+
+<script>
+
+function check1(){
+
+let a=document.getElementById("ans1").value.toLowerCase();
+
+if(a=="force"){
+
+document.getElementById("game").innerHTML=
+
+`<h2>🌲 Clue 2</h2>
+
+<p>
+A deer walks on soft mud in the forest.
+Its hooves make deep marks because the force acts on a small area.
+
+What is force per unit area called?
+</p>
+
+<input id="ans2">
+<br>
+<button onclick="check2()">Submit</button>
+<p id="msg2"></p>`
+
+}
+
+else{
+document.getElementById("msg1").innerHTML="❌ Try again explorer!";
+}
+
+}
+
+
+
+function check2(){
+
+let a=document.getElementById("ans2").value.toLowerCase();
+
+if(a=="pressure"){
+
+document.getElementById("game").innerHTML=
+
+`<h2>🌲 Clue 3</h2>
+
+<p>
+An apple falls from a tall forest tree and hits the ground.
+Which force pulls objects toward the Earth?
+</p>
+
+<input id="ans3">
+<br>
+<button onclick="check3()">Submit</button>
+<p id="msg3"></p>`
+
+}
+
+else{
+document.getElementById("msg2").innerHTML="❌ Think: Force ÷ Area";
+}
+
+}
+
+
+
+function check3(){
+
+let a=document.getElementById("ans3").value.toLowerCase();
+
+if(a=="gravity"){
+
+document.getElementById("game").innerHTML=
+
+`<h1>🏆 TREASURE FOUND!</h1>
+
+<p>
+You discovered the hidden science treasure of the forest!
+</p>
+
+<h3>Secret Formula</h3>
+
+<p>
+Pressure = Force / Area
+</p>
+
+<p>
+Great job, young scientist! 🌲</p>`
+
+}
+
+else{
+document.getElementById("msg3").innerHTML="❌ Think about falling fruits!";
+}
+
+}
+
+</script>
+
+</body>
+</html>
